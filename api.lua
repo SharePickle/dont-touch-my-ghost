@@ -13,7 +13,7 @@ dtmg = {
     },
     settings = {
         isDebug = false,
-        isEnabled = false
+        enabled = {},        
     },
     utils = {
         write = function (message)
@@ -27,6 +27,14 @@ dtmg = {
         end        
     },
     handlers = {        
+        -- player-specific enable/disable
+        isEnabled = function(pid) 
+            if (not dtmg.settings.enabled[pid]) then
+                dtmg.settings.enabled[pid] = false
+            end
+            return dtmg.settings.enabled[pid]
+        end,
+
         -- handle shortcuts
         shortcut = function(event)
             xpcall(function() 
@@ -41,7 +49,8 @@ dtmg = {
         on_built_entity = function(event)   
             xpcall(function() 
                 dtmg.utils.write("on_built_entity")
-                if (not dtmg.settings.isEnabled) then
+                local pid = event.player_index
+                if (not dtmg.handlers.isEnabled(pid)) then
                     dtmg.utils.write("Planning mode is disabled")
                     return
                 end    
@@ -49,7 +58,6 @@ dtmg = {
                 -- only if building ghost entity and it has a force
                 local entity = event.created_entity                         
                 if (event.created_entity.name == "entity-ghost" and entity.force) then                      
-                    local pid = event.player_index
                     local force = entity.force -- orignal force
                     dtmg.utils.write("entity: " .. entity.ghost_name)                    
                     entity.force = "neutral"                                                
@@ -71,14 +79,16 @@ dtmg = {
         on_toggle_enable = function(event)
             xpcall(function() 
                 dtmg.utils.write("on_toggle_enable") 
-                dtmg.settings.isEnabled = not dtmg.settings.isEnabled                            
-                if (dtmg.settings.isEnabled) then
-                    game.players[event.player_index].print({"dtmg-messages.dont-touch-my-ghost-enabled"})              
+                local pid = event.player_index                
+                local isEnabledNow = dtmg.handlers.isEnabled(pid)                
+                dtmg.settings.enabled[pid] = not dtmg.settings.enabled[pid]
+                if (dtmg.handlers.isEnabled(pid)) then
+                    game.players[pid].print({"dtmg-messages.dont-touch-my-ghost-enabled"})              
                 else
-                    game.players[event.player_index].print({"dtmg-messages.dont-touch-my-ghost-disabled"})                                  
-                    dtmg.handlers.restore_entities(event.player_index)
+                    game.players[pid].print({"dtmg-messages.dont-touch-my-ghost-disabled"})                                  
+                    dtmg.handlers.restore_entities(pid)
                 end
-                game.players[event.player_index].set_shortcut_toggled(dtmg.events.on_toggle_enable_shortcut, dtmg.settings.isEnabled)
+                game.players[pid].set_shortcut_toggled(dtmg.events.on_toggle_enable_shortcut, dtmg.handlers.isEnabled(pid))
             end, printerror) 
         end,
 
