@@ -73,9 +73,9 @@ dtmg = {
                 dtmg.utils.write("on_toggle_enable") 
                 dtmg.settings.isEnabled = not dtmg.settings.isEnabled                            
                 if (dtmg.settings.isEnabled) then
-                    game.print("DTMG: Planning mode enabled.")              
+                    game.players[event.player_index].print({"dtmg-messages.dont-touch-my-ghost-enabled"})              
                 else
-                    game.print("DTMG: Planning mode disabled.")                                  
+                    game.players[event.player_index].print({"dtmg-messages.dont-touch-my-ghost-disabled"})                                  
                     dtmg.handlers.restore_entities(event.player_index)
                 end
                 game.players[event.player_index].set_shortcut_toggled(dtmg.events.on_toggle_enable_shortcut, dtmg.settings.isEnabled)
