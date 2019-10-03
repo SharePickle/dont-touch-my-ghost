@@ -1,11 +1,11 @@
 # Don't touch my ghost!
 
-> Version 0.1.2
+> Version 0.1.4
 
 * added localisation strings for in-game messages
 * on/off message is now only shown to the player, instead of whole server
 
-> Non-Game-Changing, Utility, 0.17.6+
+> Non-Game-Changing, Utility, 0.17+
 
 ## Description
 
@@ -32,3 +32,4 @@ Icons made by [Freepik](https://www.flaticon.com/authors/freepik).
 * Doesn't work with ground tiles (concrete, landfill etc).
 * Doesn't allow to copy or cut ghost buildings placed in "Planning mode" (but still can remove by left-clicking).
 * Doesn't allow to use deconstruction planner on ghost buildings placed in "Planning mode".
+* Fixed save game issues.
